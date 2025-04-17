@@ -5,20 +5,23 @@ import {
   Button,
   Typography,
   Box,
+  Link,
 } from "@mui/material";
 import TextFieldFormInput from "../components/atoms/TextFieldFormInput";
 import validateForm from "../utils/validateForm";
+import { postRegistrationHandler } from "../api";
 
-const SignUp = () => {
+function SignUp() {
   const [formInput, setFormInput] = useState({
     firstName: "",
     lastName: "",
     emailAddress: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const allFieldsValid = () => {
     const identifiedErrors = validateForm(formInput);
@@ -29,10 +32,26 @@ const SignUp = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSubmitDisabled(true);
     if (allFieldsValid()) {
-        //TODO: Add api call
+      postRegistrationHandler(formInput)
+        .then(() => {
+          setFormInput({
+            firstName: "",
+            lastName: "",
+            emailAddress: "",
+            password: "",
+            confirmPassword: "",
+          });
+          console.log("success");
+          setSubmitDisabled(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setSubmitDisabled(false);
+        });
     } else {
-        //TODO: stop submission
+      setSubmitDisabled(false);
     }
   };
   const fieldsOnForm = [
@@ -70,14 +89,29 @@ const SignUp = () => {
                 </div>
               );
             })}
-            <Button type="submit" fullWidth sx={{ mt: 2 }}>
+            <Button
+              type="submit"
+              disabled={!!submitDisabled}
+              fullWidth
+              sx={{ mt: 2 }}
+            >
               Register
             </Button>
           </form>
+          <div>
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              underline="hover"
+              aria-label="Sign in to your account"
+            >
+              Sign in.
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </Box>
   );
-};
+}
 
 export default SignUp;

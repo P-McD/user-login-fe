@@ -3,10 +3,11 @@ import React from "react";
 import { startCase } from "lodash";
 
 function TextFieldFormInput({ formInput, setFormInput, fieldName, errors }) {
-  const handleFormInputChange = (event) => {
+  function handleFormInputChange(event) {
     setFormInput({ ...formInput, [event.target.name]: event.target.value });
-  };
-
+  }
+  const typeOfInput =
+    fieldName === "password" || fieldName === "confirmPassword" ? "password" : "text";
   const fieldLabel = startCase(fieldName);
 
   return (
@@ -20,6 +21,7 @@ function TextFieldFormInput({ formInput, setFormInput, fieldName, errors }) {
       onChange={handleFormInputChange}
       error={!!errors[fieldName]}
       helperText={errors[fieldName]}
+      type={typeOfInput}
     />
   );
 }
