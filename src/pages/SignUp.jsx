@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"
 import {
   Card,
   CardContent,
@@ -6,10 +7,12 @@ import {
   Typography,
   Box,
   Link,
+  Alert,
 } from "@mui/material";
 import TextFieldFormInput from "../components/atoms/TextFieldFormInput";
 import validateForm from "../utils/validateForm";
 import { postRegistrationHandler } from "../api";
+
 
 function SignUp() {
   const [formInput, setFormInput] = useState({
@@ -22,6 +25,7 @@ function SignUp() {
 
   const [errors, setErrors] = useState({});
   const [submitDisabled, setSubmitDisabled] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   const allFieldsValid = () => {
     const identifiedErrors = validateForm(formInput);
@@ -29,6 +33,7 @@ function SignUp() {
     if (Object.keys(identifiedErrors).length === 0) return true;
     else return false;
   };
+  const navigate = useNavigate()
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -44,6 +49,10 @@ function SignUp() {
             confirmPassword: "",
           });
           console.log("success");
+          setRegistrationSuccess(true);
+          setTimeout(() => {
+            navigate("/");
+          }, 3000);
           setSubmitDisabled(false);
         })
         .catch((err) => {
@@ -89,6 +98,11 @@ function SignUp() {
                 </div>
               );
             })}
+            {registrationSuccess && (
+              <Alert severity="success">
+                Registered successfully! Redirecting you to the login screen.
+              </Alert>
+            )}
             <Button
               type="submit"
               disabled={!!submitDisabled}
@@ -98,10 +112,11 @@ function SignUp() {
               Register
             </Button>
           </form>
+          <br />
           <div>
             Already have an account?{" "}
             <Link
-              href="/login"
+              href="/"
               underline="hover"
               aria-label="Sign in to your account"
             >

@@ -16,3 +16,10 @@ export const postRegistrationHandler = ({
     return res;
   });
 };
+
+export const postLoginHandler = (dataToSend) => {
+    return api.post(`/user/login`, dataToSend).then((res) => {
+        console.log(res)
+      return res;
+    });
+  };
